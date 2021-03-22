@@ -21,7 +21,7 @@ app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 
 app.get("/", (req, res) => {
-  res.send("API is working fine !");
+  res.send("API is working fine !;");
 });
 
 app.listen(PORT, () => console.log("Server is running on port : " + PORT));
