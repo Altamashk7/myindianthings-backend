@@ -42,4 +42,26 @@ const productSchema = mongoose.Schema({
   },
 });
 
+productSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+productSchema.set('toJSON', {
+  virtuals: true,
+});
+
 exports.Product = mongoose.model("Product", productSchema);
+
+
+
+// {
+//   "name": "bat",
+//   "image": "url",
+//   "description": "req.body.description",
+//   "images": "req.body.images",
+//   "originalPrice": 10,
+//   "discountedPrice": 5,
+//   "isFeatured":true,
+//   "colours": "req.body.colours",
+//   "category": "6058f35e9e4d6f4970521433"
+// }
