@@ -1,114 +1,67 @@
-const express = require("express");
+const {Category} = require('../models/category');
+const express = require('express');
 const router = express.Router();
-const { Category } = require("../models/category");
 
-router.get("/", (req, res) => {
-  Category.find()
-    .then((categories) => {
-      if (categories) {
-        res.status(200).json(categories);
-      } else {
-        res.status(400).json({
-          success: true,
-          message: "Not found !",
-        });
-      }
+router.get(`/`, async (req, res) =>{
+    const categoryList = await Category.find();
+
+    if(!categoryList) {
+        res.status(500).json({success: false})
+    } 
+    res.status(200).send(categoryList);
+})
+
+router.get('/:id', async(req,res)=>{
+    const category = await Category.findById(req.params.id);
+
+    if(!category) {
+        res.status(500).json({message: 'The category with the given ID was not found.'})
+    } 
+    res.status(200).send(category);
+})
+
+
+
+router.post('/', async (req,res)=>{
+    let category = new Category({
+        name: req.body.name,
+        image: req.body.image
     })
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
-        success: false,
-      });
-    });
-});
+    category = await category.save();
 
-router.get("/:id", (req, res) => {
-  Category.findById(req.params.id)
-    .then((category) => {
-      if (category) {
-        res.status(200).json(category);
-      } else {
-        res.status(400).json({
-          success: true,
-          message: "No category present with the given ID",
-        });
-      }
+    if(!category)
+    return res.status(400).send('the category cannot be created!')
+
+    res.send(category);
+})
+
+
+router.put('/:id',async (req, res)=> {
+    const category = await Category.findByIdAndUpdate(
+        req.params.id,
+        {
+            name: req.body.name,
+            image: req.body.image
+        },
+        { new: true}
+    )
+
+    if(!category)
+    return res.status(400).send('the category cannot be created!')
+
+    res.send(category);
+})
+
+router.delete('/:id', (req, res)=>{
+    Category.findByIdAndRemove(req.params.id).then(category =>{
+        if(category) {
+            return res.status(200).json({success: true, message: 'the category is deleted!'})
+        } else {
+            return res.status(404).json({success: false , message: "category not found!"})
+        }
+    }).catch(err=>{
+       return res.status(500).json({success: false, error: err}) 
     })
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
-        success: false,
-      });
-    });
-});
+})
 
-router.put("/:id", (req, res) => {
-  Category.findByIdAndUpdate(
-    req.params.id,
-    {
-      name: req.body.name,
-      image: req.body.image,
-    },
-    { new: true }
-  )
-    .then((category) => {
-      if (category) {
-        res.status(200).json(category);
-      } else {
-        res.status(400).json({
-          success: true,
-          message: "Category could not be editted !",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        error: err,
-      });
-    });
-});
-
-router.post("/", (req, res) => {
-  const newCategory = new Category({
-    name: req.body.name,
-    image: req.body.image,
-  });
-
-  newCategory
-    .save()
-    .then((createdCategory) => {
-      res.status(201).json(createdCategory);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
-        success: false,
-      });
-    });
-});
-
-router.delete("/:id", (req, res) => {
-  Category.findByIdAndRemove(req.params.id)
-    .then((deletedCategory) => {
-      if (deletedCategory) {
-        res.status(200).json({
-          success: true,
-          message: "Category is deleted successfully !",
-        });
-      } else {
-        res.status(404).json({
-          success: false,
-          message: "Category not found !",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(400).json({
-        success: false,
-        error: err,
-      });
-    });
-});
-
-module.exports = router;
+module.exports =router;

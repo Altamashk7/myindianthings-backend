@@ -17,10 +17,12 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 const categoriesRouter = require("./routers/categories");
 const productsRouter = require("./routers/products");
 const ordersRoutes = require('./routers/orders');
+const newarrivalsRoutes = require('./routers/newarrivals');
 //routes
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/orders", ordersRoutes);
+app.use("/newarrivals", newarrivalsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is working fine !");
