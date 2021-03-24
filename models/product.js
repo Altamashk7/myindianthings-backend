@@ -53,7 +53,7 @@ productSchema.set('toJSON', {
 exports.Product = mongoose.model("Product", productSchema);
 
 
-
+//product example
 // {
 //   "name": "bat",
 //   "image": "url",
