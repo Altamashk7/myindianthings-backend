@@ -14,6 +14,8 @@ mongoose.connect(process.env.CONNECTION_STRING, {
   dbName: "myindianthingsDB",
 });
 
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+
 const categoriesRouter = require("./routers/categories");
 const productsRouter = require("./routers/products");
 const ordersRoutes = require('./routers/orders');
