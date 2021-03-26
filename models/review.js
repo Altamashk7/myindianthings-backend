@@ -6,22 +6,22 @@ const reviewSchema = mongoose.Schema({
     required: true,
   },
   userimage: {
-    type: String
+    type: String,
   },
   comment: {
-    type:String,
-    required: true
+    type: String,
+    required: true,
   },
   commentimages: {
-    type: String
+    type: String,
   },
   rating: {
     type: Number,
-    required: true
+    required: true,
   },
   email: {
-    type: String
-  }
+    type: String,
+  },
 });
 
 exports.Review = mongoose.model("Review", reviewSchema);

@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv/config");
 
-
 const app = express();
 app.use(express.json());
 const PORT = "3000" || process.env.PORT;
@@ -14,12 +13,12 @@ mongoose.connect(process.env.CONNECTION_STRING, {
   dbName: "myindianthingsDB",
 });
 
-app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
 
 const categoriesRouter = require("./routers/categories");
 const productsRouter = require("./routers/products");
-const ordersRoutes = require('./routers/orders');
-const reviewsRoutes = require('./routers/reviews');
+const ordersRoutes = require("./routers/orders");
+const reviewsRoutes = require("./routers/reviews");
 //routes
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
