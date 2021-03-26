@@ -14,15 +14,17 @@ mongoose.connect(process.env.CONNECTION_STRING, {
   dbName: "myindianthingsDB",
 });
 
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+
 const categoriesRouter = require("./routers/categories");
 const productsRouter = require("./routers/products");
 const ordersRoutes = require('./routers/orders');
-const newarrivalsRoutes = require('./routers/newarrivals');
+const reviewsRoutes = require('./routers/reviews');
 //routes
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/orders", ordersRoutes);
-app.use("/newarrivals", newarrivalsRoutes);
+app.use("/reviews", reviewsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is working fine !");
