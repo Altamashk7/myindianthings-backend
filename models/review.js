@@ -7,6 +7,7 @@ const reviewSchema = mongoose.Schema({
   },
   userimage: {
     type: String,
+
   },
   comment: {
     type: String,
@@ -22,6 +23,13 @@ const reviewSchema = mongoose.Schema({
   email: {
     type: String,
   },
+});
+
+reviewSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+reviewSchema.set("toJSON", {
+  virtuals: true,
 });
 
 exports.Review = mongoose.model("Review", reviewSchema);

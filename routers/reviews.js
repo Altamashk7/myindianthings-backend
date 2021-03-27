@@ -1,6 +1,32 @@
 const { Review } = require("../models/review");
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+
+const FILE_TYPE_MAP = {
+  "image/png": "png",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
+};
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("invalid image type");
+
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, "public/uploads");
+  },
+  filename: function (req, file, cb) {
+    const fileName = file.originalname.split(" ").join("-");
+    const extension = FILE_TYPE_MAP[file.mimetype];
+    cb(null, `${fileName}-${Date.now()}.${extension}`);
+  },
+});
+
+const uploadOptions = multer({ storage: storage });
 
 router.get(`/`, async (req, res) => {
   const reviewList = await Review.find();
@@ -22,12 +48,25 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(review);
 });
 
-router.post("/", async (req, res) => {
+var cpUpload = uploadOptions.fields([
+  { name: "userimage", maxCount: 1 },
+  { name: "commentimages", maxCount: 1 },
+]);
+
+router.post("/", cpUpload, async (req, res) => {
+  if (req.files["userimage"] !== undefined)
+    var userf = req.files["userimage"][0].filename;
+
+  if (req.files["commentimages"] !== undefined)
+    var commentf = req.files["commentimages"][0].filename;
+
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
   let review = new Review({
     name: req.body.name,
-    userimage: req.body.userimage,
+    userimage: `${basePath}${userf}`,
     comment: req.body.comment,
-    commentimages: req.body.commentimages,
+    commentimages: `${basePath}${commentf}`,
     rating: req.body.rating,
     email: req.body.email,
   });
