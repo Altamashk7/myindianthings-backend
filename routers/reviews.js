@@ -54,27 +54,78 @@ var cpUpload = uploadOptions.fields([
 ]);
 
 router.post("/", cpUpload, async (req, res) => {
-  if (req.files["userimage"] !== undefined)
+  if (
+    req.files["userimage"] !== undefined &&
+    req.files["commentimages"] !== undefined
+  ) {
     var userf = req.files["userimage"][0].filename;
-
-  if (req.files["commentimages"] !== undefined)
     var commentf = req.files["commentimages"][0].filename;
 
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
-  let review = new Review({
-    name: req.body.name,
-    userimage: `${basePath}${userf}`,
-    comment: req.body.comment,
-    commentimages: `${basePath}${commentf}`,
-    rating: req.body.rating,
-    email: req.body.email,
-  });
-  review = await review.save();
+    let review = new Review({
+      name: req.body.name,
+      userimage: `${basePath}${userf}`,
+      comment: req.body.comment,
+      commentimages: `${basePath}${commentf}`,
+      rating: req.body.rating,
+      email: req.body.email,
+    });
+    review = await review.save();
 
-  if (!review) return res.status(400).send("the review cannot be created!");
+    if (!review) return res.status(400).send("the review cannot be created!");
 
-  res.send(review);
+    res.send(review);
+  } else if (req.files["commentimages"] !== undefined) {
+    var commentf = req.files["commentimages"][0].filename;
+
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
+    let review = new Review({
+      name: req.body.name,
+
+      comment: req.body.comment,
+      commentimages: `${basePath}${commentf}`,
+      rating: req.body.rating,
+      email: req.body.email,
+    });
+
+    review = await review.save();
+
+    if (!review) return res.status(400).send("the review cannot be created!");
+
+    res.send(review);
+  } else if (req.files["userimage"] !== undefined) {
+    var userf = req.files["userimage"][0].filename;
+
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
+    let review = new Review({
+      name: req.body.name,
+      userimage: `${basePath}${userf}`,
+      comment: req.body.comment,
+
+      rating: req.body.rating,
+      email: req.body.email,
+    });
+    review = await review.save();
+
+    if (!review) return res.status(400).send("the review cannot be created!");
+
+    res.send(review);
+  } else {
+    let review = new Review({
+      name: req.body.name,
+      comment: req.body.comment,
+      rating: req.body.rating,
+      email: req.body.email,
+    });
+    review = await review.save();
+
+    if (!review) return res.status(400).send("the review cannot be created!");
+
+    res.send(review);
+  }
 });
 
 router.delete("/:id", (req, res) => {

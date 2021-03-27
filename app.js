@@ -19,11 +19,13 @@ const categoriesRouter = require("./routers/categories");
 const productsRouter = require("./routers/products");
 const ordersRoutes = require("./routers/orders");
 const reviewsRoutes = require("./routers/reviews");
+const blogsRoutes = require("./routers/blogs");
 //routes
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/orders", ordersRoutes);
 app.use("/reviews", reviewsRoutes);
+app.use("/blogs", blogsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is working fine !");

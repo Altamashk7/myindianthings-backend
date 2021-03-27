@@ -7,7 +7,7 @@ const reviewSchema = mongoose.Schema({
   },
   userimage: {
     type: String,
-
+    default: "no image",
   },
   comment: {
     type: String,
@@ -15,6 +15,7 @@ const reviewSchema = mongoose.Schema({
   },
   commentimages: {
     type: String,
+    default: "no image",
   },
   rating: {
     type: Number,
