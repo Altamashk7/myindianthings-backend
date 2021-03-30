@@ -32,12 +32,8 @@ const uploadOptions = multer({ storage: storage });
 
 router.get(`/`, async (req, res) => {
   // localhost:3000/api/v1/products?categories=2342342,234234
-  let filter = {};
-  if (req.query.categories) {
-    filter = { category: req.query.categories.split(",") };
-  }
 
-  const productList = await Product.find(filter).populate("category");
+  const productList = await Product.find();
 
   if (!productList) {
     res.status(500).json({ success: false });
@@ -46,7 +42,7 @@ router.get(`/`, async (req, res) => {
 });
 
 router.get("/newArrivals", async (req, res) => {
-  const newarrivalsList = await Product.find().sort({ $natural: -1 }).limit(2);
+  const newarrivalsList = await Product.find().sort({ $natural: -1 }).limit(4);
 
   if (!newarrivalsList) {
     res.status(500).json({ success: false });
@@ -56,8 +52,17 @@ router.get("/newArrivals", async (req, res) => {
   res.status(200).send(newarrivalsList);
 });
 
+router.get(`/category/:id`, async (req, res) => {
+  const product = await Product.find({ category: req.params.id });
+
+  if (!product) {
+    res.status(500).json({ success: req.params.category });
+  }
+  res.send(product);
+});
+
 router.get(`/:id`, async (req, res) => {
-  const product = await Product.findById(req.params.id).populate("category");
+  const product = await Product.findById(req.params.id);
 
   if (!product) {
     res.status(500).json({ success: false });
