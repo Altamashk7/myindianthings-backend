@@ -33,7 +33,14 @@ const uploadOptions = multer({ storage: storage });
 router.get(`/`, async (req, res) => {
   // localhost:3000/api/v1/products?categories=2342342,234234
 
-  const productList = await Product.find();
+  let filter = {};
+  if (req.query.category) {
+    filter = { category: req.query.category };
+  }
+
+  const productList = await Product.find(filter).populate("category");
+
+  // const productList = await Product.find({}).populate("category");
 
   if (!productList) {
     res.status(500).json({ success: false });
