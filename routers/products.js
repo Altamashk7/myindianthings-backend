@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
 const uploadOptions = multer({ storage: storage });
 
 router.get(`/`, async (req, res) => {
-  // localhost:3000/api/v1/products?categories=2342342,234234
+  // localhost:3000/products?categories=2342342,234234
 
   let filter = {};
   if (req.query.category) {
@@ -82,6 +82,7 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   if (!category) return res.status(400).send("Invalid Category");
 
   const file = req.file;
+
   if (!file) return res.status(400).send("No image in the request");
 
   const fileName = file.filename;
@@ -114,29 +115,47 @@ router.put("/:id", uploadOptions.single("image"), async (req, res) => {
   if (!category) return res.status(400).send("Invalid Category");
 
   const file = req.file;
-  if (!file) return res.status(400).send("No image in the request");
+  if (file) {
+    const fileName = file.filename;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
-  const fileName = file.filename;
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        image: req.body.image,
+        description: req.body.description,
+        images: `${basePath}${fileName}`,
+        originalPrice: req.body.originalPrice,
+        discountedPrice: req.body.discountedPrice,
+        isFeatured: req.body.isFeatured,
+        colours: req.body.colours,
+        category: req.body.category,
+      },
+      { new: true }
+    );
 
-  const product = await Product.findByIdAndUpdate(
-    req.params.id,
-    {
-      name: req.body.name,
-      image: req.body.image,
-      description: req.body.description,
-      images: `${basePath}${fileName}`,
-      originalPrice: req.body.originalPrice,
-      discountedPrice: req.body.discountedPrice,
-      isFeatured: req.body.isFeatured,
-      colours: req.body.colours,
-      category: req.body.category,
-    },
-    { new: true }
-  );
+    if (!product) return res.status(500).send("the product cannot be updated!");
+    res.send(product);
+  } else {
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        image: req.body.image,
+        description: req.body.description,
+        originalPrice: req.body.originalPrice,
+        discountedPrice: req.body.discountedPrice,
+        isFeatured: req.body.isFeatured,
+        colours: req.body.colours,
+        category: req.body.category,
+      },
+      { new: true }
+    );
 
-  if (!product) return res.status(500).send("the product cannot be updated!");
-  res.send(product);
+    if (!product) return res.status(500).send("the product cannot be updated!");
+    res.send(product);
+  }
 });
 
 router.delete("/:id", (req, res) => {

@@ -9,6 +9,9 @@ const blogSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+  },
 });
 
 blogSchema.virtual("id").get(function () {
