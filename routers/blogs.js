@@ -77,28 +77,30 @@ router.put("/:id", uploadOptions.single("image"), async (req, res) => {
   if (file) {
     const fileName = file.filename;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-    const blog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        content: req.body.content,
-        image: `${basePath}${fileName}`,
-      },
-      { new: true }
-    );
+    let params = {
+      title: req.body.title,
+      content: req.body.content,
+      image: `${basePath}${fileName}`,
+    };
+    for (let prop in params) if (!params[prop]) delete params[prop];
+    const blog = await Blog.findByIdAndUpdate(req.params.id, params, {
+      new: true,
+    });
 
     if (!blog) return res.status(400).send("the blog cannot be created!");
 
     res.send(blog);
   } else {
-    const blog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        content: req.body.content,
-      },
-      { new: true }
-    );
+    let params = {
+      title: req.body.title,
+      content: req.body.content,
+      image: `${basePath}${fileName}`,
+    };
+    for (let prop in params) if (!params[prop]) delete params[prop];
+
+    const blog = await Blog.findByIdAndUpdate(req.params.id, params, {
+      new: true,
+    });
 
     if (!blog) return res.status(400).send("the blog cannot be created!");
 
