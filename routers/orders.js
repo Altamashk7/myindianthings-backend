@@ -35,6 +35,7 @@ router.post("/", async (req, res) => {
     status: req.body.status,
     totalPrice: tPrice,
     email: req.body.email,
+    name: req.body.name,
   });
   order = await order.save();
 
