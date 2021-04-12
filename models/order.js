@@ -7,6 +7,13 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: true,
       },
+      price: {
+        type: Number,
+        required: true,
+      },
+      colour: {
+        type: String,
+      },
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
@@ -29,10 +36,6 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  country: {
-    type: String,
-    required: true,
-  },
   phone: {
     type: String,
     required: true,
@@ -50,7 +53,7 @@ const orderSchema = mongoose.Schema({
   totalPrice: {
     type: Number,
   },
-  username: {
+  email: {
     type: String,
     required: true,
   },

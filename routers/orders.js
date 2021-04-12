@@ -19,17 +19,22 @@ router.get(`/:id`, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  let tPrice = 0;
+
+  req.body.orderItems.forEach((item) => {
+    tPrice = tPrice + item.price;
+  });
+
   let order = new Order({
     orderItems: req.body.orderItems,
     shippingAddress1: req.body.shippingAddress1,
     shippingAddress2: req.body.shippingAddress2,
     city: req.body.city,
     zip: req.body.zip,
-    country: req.body.country,
     phone: req.body.phone,
     status: req.body.status,
-    totalPrice: req.body.totalPrice,
-    username: req.body.username,
+    totalPrice: tPrice,
+    email: req.body.email,
   });
   order = await order.save();
 
