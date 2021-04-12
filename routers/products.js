@@ -118,40 +118,39 @@ router.put("/:id", uploadOptions.single("image"), async (req, res) => {
   if (file) {
     const fileName = file.filename;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    let params = {
+      name: req.body.name,
+      image: `${basePath}${fileName}`,
+      description: req.body.description,
+      originalPrice: req.body.originalPrice,
+      discountedPrice: req.body.discountedPrice,
+      isFeatured: req.body.isFeatured,
+      colours: req.body.colours,
+      category: req.body.category,
+    };
+    for (let prop in params) if (!params[prop]) delete params[prop];
 
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: req.body.name,
-        image: req.body.image,
-        description: req.body.description,
-        images: `${basePath}${fileName}`,
-        originalPrice: req.body.originalPrice,
-        discountedPrice: req.body.discountedPrice,
-        isFeatured: req.body.isFeatured,
-        colours: req.body.colours,
-        category: req.body.category,
-      },
-      { new: true }
-    );
+    const product = await Product.findByIdAndUpdate(req.params.id, params, {
+      new: true,
+    });
 
     if (!product) return res.status(500).send("the product cannot be updated!");
     res.send(product);
   } else {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: req.body.name,
-        image: req.body.image,
-        description: req.body.description,
-        originalPrice: req.body.originalPrice,
-        discountedPrice: req.body.discountedPrice,
-        isFeatured: req.body.isFeatured,
-        colours: req.body.colours,
-        category: req.body.category,
-      },
-      { new: true }
-    );
+    let params = {
+      name: req.body.name,
+      image: req.body.image,
+      description: req.body.description,
+      originalPrice: req.body.originalPrice,
+      discountedPrice: req.body.discountedPrice,
+      isFeatured: req.body.isFeatured,
+      colours: req.body.colours,
+      category: req.body.category,
+    };
+    for (let prop in params) if (!params[prop]) delete params[prop];
+    const product = await Product.findByIdAndUpdate(req.params.id, params, {
+      new: true,
+    });
 
     if (!product) return res.status(500).send("the product cannot be updated!");
     res.send(product);
